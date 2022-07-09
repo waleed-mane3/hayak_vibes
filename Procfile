@@ -1,0 +1,1 @@
+web: gunicorn hayak_backend.wsgi --log-file -
