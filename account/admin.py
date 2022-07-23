@@ -9,11 +9,11 @@ from account.models import Event, Invitation
 
 @admin.register(Event)
 class EventImportExport(ImportExportModelAdmin):
-    list_display = ['id', 'name', 'user', 'capacity']
+    list_display = ['id', 'name', 'user', 'city', 'country', 'capacity']
 
 
 @admin.register(Invitation)
 class InvitationImportExport(ImportExportModelAdmin):
-    list_display = ['id', 'event', 'name', 'mobile', 'email', 'status', 'reference']
+    list_display = ['id', 'event', 'first_name', 'last_name','mobile', 'email', 'status', 'reference']
 
 

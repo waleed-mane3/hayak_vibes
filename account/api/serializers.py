@@ -32,40 +32,68 @@ class NewAccountSerializer(serializers.ModelSerializer):
         account.save()
         return account
     
+
 # This is used to update #first_sign_in# field
 class UpdateUserSerializer(ModelSerializer):
     class Meta:
 
         model = CustomUser
-        fields = ['id', 'first_name', 'first_sign_in', ]
+        fields = ['mobile', 'first_name', 'last_name']
 
 
 class CreateEventSerializer(ModelSerializer):
     class Meta:
 
         model = Event
-        fields = ['user', 'name', 'venue', 'groom', 'bride', 'date',]
+        fields = '__all__'
+        read_only_fields = ['user']
 
 
 class UpdateEventSerializer(ModelSerializer):
     class Meta:
 
         model = Event
-        fields = ['name', 'venue', 'groom', 'bride', 'date']
+        fields = ['name', 'venue', 'location', 'city', 'country', 'date']
 
 
 class UserEventsSerializer(ModelSerializer):
 
     no_invitations = serializers.SerializerMethodField('number_of_invitations')
+    pending = serializers.SerializerMethodField('pendings')
+    waiting = serializers.SerializerMethodField('waitings')
+    confirmed = serializers.SerializerMethodField('confirmeds')
+    canceled = serializers.SerializerMethodField('canceleds')
+    checked = serializers.SerializerMethodField('checkeds')
 
     class Meta:
-
         model = Event
-        fields = ['id', 'user', 'name', 'venue', 'groom', 'bride', 'date', 'no_invitations']
+        fields = ['id', 'user', 'name', 'venue', 'location', 'city', 'country', 'date', 'capacity', 'no_invitations','image', 'pending', 'waiting', 'confirmed', 'canceled', 'checked']
     
     def number_of_invitations(self, Event):
         invitations = Event.invitation_set.all()
         return invitations.count()
+    
+    
+    def pendings(self, Event):
+        pending = Event.invitation_set.filter(status="pending")
+        return pending.count()
+
+    def waitings(self, Event):
+        waiting = Event.invitation_set.filter(status="waiting")
+        return waiting.count()
+    
+    def confirmeds(self, Event):
+        confirmed = Event.invitation_set.filter(status="confirmed")
+        return confirmed.count()
+    
+    def canceleds(self, Event):
+        canceled = Event.invitation_set.filter(status="apologized")
+        return canceled.count()
+
+    def checkeds(self, Event):
+        checked = Event.invitation_set.filter(status="checked")
+        return checked.count()
+    
 
     
 
@@ -73,15 +101,30 @@ class CreateInvitationSerializer(ModelSerializer):
     class Meta:
 
         model = Invitation
-        fields = ['event', 'name', 'mobile', 'email']
+        fields = ['event', 'first_name', 'last_name', 'mobile', 'email']
+        read_only_fields = ['event']
+
+        
+
+# Get General Statistics
+class GetGeneralStatisticsSerializer(serializers.Serializer):
+    pending = serializers.IntegerField()
+    
+
 
 
 # Get all invitation for one event 
 class EventInvitationsSerializer(ModelSerializer):
-    class Meta:
 
+    class Meta:
         model = Invitation
-        fields = ['id', 'event', 'name', 'mobile', 'email', 'status']
+        fields = ['id', 'event', 'first_name', 'last_name', 'mobile', 'email', 'status']
+
+
+
+
+
+
 
 
 class UpdateInvitationSerializer(ModelSerializer):
@@ -89,9 +132,9 @@ class UpdateInvitationSerializer(ModelSerializer):
 
         model = Invitation
         fields = ['name', 'mobile', 'email', 'status']
-    
 
-class ScanInvitationSerializer(ModelSerializer):
+
+class UpdateInvitationStatusSerializer(ModelSerializer):
     class Meta:
 
         model = Invitation
@@ -100,6 +143,10 @@ class ScanInvitationSerializer(ModelSerializer):
 
 
 
+class ScanInvitationSerializer(ModelSerializer):
+    class Meta:
 
+        model = Invitation
+        fields = ['status']
 
 

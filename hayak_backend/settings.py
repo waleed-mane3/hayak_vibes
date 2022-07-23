@@ -28,7 +28,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['127.0.0.1', 'hayak-app.herokuapp.com', "*"]
 
 # BASE_URL = "https://hayak-app.herokuapp.com"
-BASE_URL = "http://127.0.0.1:9000"
+BASE_URL = "http://127.0.0.1:5000"
 
 
 # Application definition
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'auth_system',
     'account',
     'design',
+    'statistic',
 
     # Packages 
     'rest_framework',
@@ -67,7 +68,7 @@ REST_FRAMEWORK = {
 # JWT AUTH Settings 
 from datetime import timedelta
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=90),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
